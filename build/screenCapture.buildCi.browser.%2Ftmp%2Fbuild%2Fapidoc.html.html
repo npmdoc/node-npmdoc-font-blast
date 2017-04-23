@@ -1,0 +1,127 @@
+<html><head></head><body><div class="apidocDiv">
+<style>
+/*csslint
+*/
+.apidocDiv {
+    background: #fff;
+    font-family: Arial, Helvetica, sans-serif;
+}
+.apidocDiv a[href] {
+    color: #33f;
+    font-weight: bold;
+    text-decoration: none;
+}
+.apidocDiv a[href]:hover {
+    text-decoration: underline;
+}
+.apidocCodeCommentSpan {
+    background: #bbf;
+    color: #000;
+    display: block;
+}
+.apidocCodeKeywordSpan {
+    color: #d00;
+    font-weight: bold;
+}
+.apidocCodePre {
+    background: #eef;
+    border: 1px solid;
+    color: #777;
+    padding: 5px;
+    white-space: pre-wrap;
+}
+.apidocFooterDiv {
+    margin-top: 20px;
+    text-align: center;
+}
+.apidocModuleLi {
+    margin-top: 10px;
+}
+.apidocSectionDiv {
+    border-top: 1px solid;
+    margin-top: 20px;
+}
+.apidocSignatureSpan {
+    color: #777;
+    font-weight: bold;
+}
+</style>
+<h1>api documentation for
+    <a href="https://github.com/eugene1g/font-blast">font-blast (v0.6.1)</a>
+</h1>
+<h4>Converts any icon-font (Font Awesome etc) into individual SVG files for each icon.</h4>
+<div class="apidocSectionDiv"><a href="#apidoc.tableOfContents" id="apidoc.tableOfContents"><h1>table of contents</h1></a><ol>
+
+    <li class="apidocModuleLi"><a href="#apidoc.module.font-blast">module font-blast</a><ol>
+
+        <li>
+
+            <a class="apidocElementLiA" href="#apidoc.element.font-blast.font-blast">
+            function <span class="apidocSignatureSpan"></span>font-blast
+            <span class="apidocSignatureSpan">(fontFile, destinationFolder, userConfig)</span>
+            </a>
+
+        </li>
+
+    </ol></li>
+
+</ol></div>
+
+<div class="apidocSectionDiv">
+<h1><a href="#apidoc.module.font-blast" id="apidoc.module.font-blast">module font-blast</a></h1>
+
+
+    <h2>
+        <a href="#apidoc.element.font-blast.font-blast" id="apidoc.element.font-blast.font-blast">
+        function <span class="apidocSignatureSpan"></span>font-blast
+        <span class="apidocSignatureSpan">(fontFile, destinationFolder, userConfig)</span>
+        </a>
+    </h2>
+    <ul>
+    <li>description and source-code<pre class="apidocCodePre">function mainBlaster(fontFile, destinationFolder, userConfig) {
+  var config = Object.assign({}, defaultConfig, userConfig || {});
+  var svgFontContent = _gracefulFs2.default.readFileSync(fontFile, "utf-8");
+
+  return (0, _glyphExtractor2.default)(svgFontContent, config.filenames, function (characterSvgs) {
+    console.info("Found " + characterSvgs.length + " available icons in the font");
+    console.info("Generating SVG content for each character...");
+
+    var svgDir = _path2.default.resolve(process.cwd(), _path2.default.join(destinationFolder, "svg"));
+    var pngDir = _path2.default.resolve(process.cwd(), _path2.default.join(destinationFolder, "png"));
+
+    if (!_gracefulFs2.default.existsSync(svgDir)) _mkdirp2.default.sync(svgDir);
+
+    var savedIcons = [];
+    characterSvgs.forEach(function (char) {
+      var filename = char.name ? char.name : char.code;
+      //If a subset of icons set was requested, ignore any others that are not within the subset
+      if (config.icons &amp;&amp; config.icons.length &amp;&amp; config.icons.indexOf(char.code) === -1 &amp;&amp; config.icons.indexOf(filename) === -1
+) {
+        return;
+      }
+      savedIcons.push(char);
+      _gracefulFs2.default.writeFileSync(_path2.default.join(svgDir, filename + ".svg"), char.svg);
+    });
+    console.info("Saved " + savedIcons.length + " files to " + svgDir);
+
+    if (config.png &amp;&amp; !isNaN(config.png)) {
+      console.info("Generating PNG images - this may take a minute...");
+      (0, _pngGenerator2.default)(svgDir, pngDir, config.png);
+    }
+
+    (0, _verify2.default)(svgFontContent, savedIcons, config.png, destinationFolder);
+  }, config.cleanCharacter);
+}</pre></li>
+    <li>example usage<pre class="apidocCodePre">n/a</pre></li>
+    </ul>
+
+
+</div>
+
+<div class="apidocFooterDiv">
+    [ this document was created with
+    <a href="https://github.com/kaizhu256/node-utility2" target="_blank">utility2</a>
+    ]
+</div>
+</div>
+</body></html>
